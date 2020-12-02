@@ -1,0 +1,32 @@
+---
+- name: install amazon cloudwatch agent
+  apt:
+    deb: https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+
+- set_fact:
+    cloudwatch_conf: "{{ playbook_dir }}/templates/cloudwatch/config.json"
+
+- name: setup config.json
+  become: yes
+  template:
+    src: "{{ cloudwatch_conf }}"
+    dest: "{{ cloudwatch_agent_path }}/bin/config.json"
+  when: cloudwatch_conf is file
+
+- name: cloudwatch control, fetch config for ec2
+  become: yes
+  command: "{{ cloudwatch_agent_path }}/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:{{ cloudwatch_agent_path }}/bin/config.json -s"
+
+- name: stop cloudwatch agent
+  become: yes
+  service:
+    name: amazon-cloudwatch-agent
+    state: stopped
+  tags: cloudwatch-stop
+
+- name: start cloudwatch agent
+  become: yes
+  service:
+    name: amazon-cloudwatch-agent
+    state: started
+  tags: cloudwatch-start
