@@ -1,3 +1,4 @@
 ---
 
 cloudwatch_agent_path: "/opt/aws/amazon-cloudwatch-agent"
+machine_architecture: "amd64"
