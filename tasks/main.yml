@@ -2,7 +2,7 @@
 - name: install amazon cloudwatch agent
   become: yes
   apt:
-    deb: https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+    deb: https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/{{ machine_architecture }}/latest/amazon-cloudwatch-agent.deb
 
 - set_fact:
     cloudwatch_conf: "{{ playbook_dir }}/templates/cloudwatch/config.json"
